@@ -79,6 +79,7 @@ h1 {
 }
 
 #button-play {
+  height: 88px;
   margin-left: 0;
   display: flex;
   align-items: center;
