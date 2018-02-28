@@ -96,3 +96,11 @@ h1 {
   margin-left: 0px;
   animation: contrast 15s infinite linear;
 }
+
+#output {
+  height: 52px;
+}
+
+#record {
+  height: 26px;
+}
