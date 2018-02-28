@@ -1,0 +1,239 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Mario Bubble Monsters</title>
+<link rel="stylesheet" href="monsterSmash.css">
+<div id="stage"></div>
+<p id="output"></p>
+<script>
+    //Объект gameTimer
+    var gameTimer = {
+        time: 0,
+        interval: undefined,
+        start: function() {
+            var self = this;
+            this.interval = setInterval(function() {
+                self.tick();
+            }, 1000);
+        },
+        tick: function() {
+            this.time--;
+        },
+        stop: function() {
+            clearInterval(this.interval);
+        },
+        reset: function() {
+            this.time = 0;
+        }
+    };
+    //Объект monster
+    var monster = {
+        //Размер каждого кадра и число столбцов в наборе фреймов
+        IMAGE: "monsterTileSheet.png",
+        SIZE: 128,
+        COLUMNS: 3,
+        //Номер последнего кадра анимации и номер текущего кадра
+        numberOfFrames: 5,
+        currentFrame: 0,
+        //Свойства X и Y позиций кадра в наборе кадров
+        //При загрузке объекта они равны 0
+        sourceX: 0,
+        sourceY: 0,
+        //Свойство для направления цикла анимации
+        forward: true,
+        //Состояния
+        HIDING: 0,
+        JUMPING: 1,
+        HIT: 2,
+        state: this.HIDING,
+        //Свойства, необходимые для отображения взрыва
+        timeToReset: 9,
+        resetCounter: 0,
+        //Свойство для хранения случайного времени
+        waitTime: undefined,
+        //Метод определения случайного времени начала анимации
+        findWaitTime: function() {},
+        //Метод updateAnimation объекта
+        updateAnimation: function() {
+            this.sourceX = Math.floor(this.currentFrame %
+                this.COLUMNS) * this.SIZE;
+            this.sourceY = Math.floor(this.currentFrame /
+                this.COLUMNS) * this.SIZE;
+            //Выясним состояние монстра
+            if (this.state !== this.HIT) {
+                if (this.waitTime > 0 || this.waitTime === undefined) {
+                    this.state = this.HIDING;
+                } else {
+                    this.state = this.JUMPING;
+                }
+            }
+            //Действия в зависимости от состояния монстра
+            switch (this.state) {
+                case this.HIDING:
+                    this.currentFrame = 0;
+                    this.waitTime--;
+                    break;
+                case this.JUMPING:
+                    //Если это последний кадр анимации, свойство
+                    //forward меняет свое значение на false
+                    if (this.currentFrame === this.numberOfFrames) {
+                        this.forward = false;
+                    }
+                    //Если это начальный кадр, свойство forward
+                    //меняет свое значение на true
+                    if (this.currentFrame === 0 && this.forward === false) {
+                        //Смена forward на true, расчет нового waitTime,
+                        //переход в состояние HIDING и выход из switch
+                        this.forward = true;
+                        this.findWaitTime();
+                        this.state = this.HIDING;
+                        break;
+                    }
+                    //Изменение номера текущего кадра:
+                    //+1 при движении вперед, -1 при движении назад
+                    if (this.forward) {
+                        this.currentFrame++;
+                    } else {
+                        this.currentFrame--;
+                    }
+                    break;
+                case this.HIT:
+                    //Текущим становится 7-й кадр с изображением взрыва
+                    this.currentFrame = 6;
+                    //Увеличение resetCounter на 1
+                    this.resetCounter++;
+                    //Повтор анимации, если resetCounter = timeToReset
+                    if (this.resetCounter === this.timeToReset) {
+                        this.state = this.HIDING;
+                        this.forward = true;
+                        this.currentFrame = 0;
+                        this.resetCounter = 0;
+                        this.findWaitTime();
+                    }
+                    break;
+            }
+        }
+    };
+    //--- Основная программа
+    //Загрузка набора кадров анимации
+    var image = new Image();
+    image.addEventListener("load", loadHandler, false);
+    image.src = "images/" + monster.IMAGE;
+    //Число строк, столбцов, размер клеток и области между ними
+    var ROWS = 3;
+    var COLUMNS = 4;
+    var SIZE = monster.SIZE;
+    var SPACE = 10;
+    //Массивы для монстров, их холстов и поверхностей рисования
+    var monsterObjects = [];
+    var monsterCanvases = [];
+    var monsterDrawingSurfaces = [];
+    //Переменные игры
+    var monstersHit = 0;
+    //Ссылка на элемент вывода
+    var output = document.querySelector("#output");
+
+    function loadHandler() {
+        //Рисование сетки с монстрами
+        buildMap();
+        //Старт таймера игры
+        gameTimer.time = 30;
+        gameTimer.start();
+        //Старт анимации
+        updateAnimation();
+    }
+
+    function buildMap() {
+        for (var row = 0; row < ROWS; row++) {
+            for (var column = 0; column < COLUMNS; column++) {
+                //Создание новой копии объекта monster, вычисление
+                //задержки при отображении его начального кадра и
+                //сохранение этого нового объекта в массиве.
+                var newMonsterObject = Object.create(monster);
+                newMonsterObject.findWaitTime();
+                monsterObjects.push(newMonsterObject);
+                //Создание для каждого монстра элемента canvas, как
+                //дочернего элемента stage, позиционирование его,
+                //подключение к нему механизма отслеживания события
+                //и сохранение созданного элемента canvas в массиве.
+                var canvas = document.createElement("canvas");
+                canvas.setAttribute("width", SIZE);
+                canvas.setAttribute("height", SIZE);
+                stage.appendChild(canvas);
+                canvas.style.top = row * (SIZE + SPACE) + "px";
+                canvas.style.left = column * (SIZE + SPACE) + "px";
+                canvas.addEventListener("mousedown",
+                    mousedownHandler, false);
+                monsterCanvases.push(canvas);
+                //Создание для каждого элемента canvas поверхности
+                //рисования и сохранение этой поверхности в массиве.
+                var drawingSurface = canvas.getContext("2d");
+                monsterDrawingSurfaces.push(drawingSurface);
+            }
+        }
+    }
+
+    function updateAnimation() {
+        //Установка таймера вызова updateAnimation на 120 мс
+        //пока время игрового таймера больше нуля
+        if (gameTimer.time > 0) {
+            setTimeout(updateAnimation, 120);
+        }
+        //Перебор всех монстров для выполнения
+        //их методов updateAnimation
+        for (var i = 0; i < monsterObjects.length; i++) {
+            monsterObjects[i].updateAnimation();
+        }
+        //Проверка на конец игры
+        if (gameTimer.time === 0) {
+            endGame();
+        }
+        //Отображение анимации
+        render();
+    }
+
+    function endGame() {
+        //Остановка игрового таймера
+        gameTimer.stop();
+        //Отключение механизма отслеживания событий
+        //mousedown для холстов всех монстров
+        for (var i = 0; i < monsterCanvases.length; i++) {
+            var canvas = monsterCanvases[i];
+            canvas.removeEventListener("mousedown",
+                mousedownHandler, false);
+        }
+    }
+
+    function mousedownHandler(event) {
+        //Выясним, над каким холстом был клик
+        var theCanvasThatWasClicked = event.target;
+        //Поиск в массиве monsterCanvases элемента, который
+        //совпадает с холстом, над которым был сделан клик
+        for (var i = 0; i < monsterCanvases.length; i++) {
+            if (monsterCanvases[i] === theCanvasThatWasClicked) {
+                var monster = monsterObjects[i]
+                if (monster.state === monster.JUMPING) {
+                    monster.state = monster.HIT;
+                    monstersHit++;
+                }
+            }
+        }
+    }
+
+    function render() {
+        for (var i = 0; i < monsterObjects.length; i++) {
+            //Формирование ссылки на текущий объект
+            var monster = monsterObjects[i];
+            //и на его поверхность рисования
+            var drawingSurface = monsterDrawingSurfaces[i];
+            //Очистка холста текущего монстра
+            drawingSurface.clearRect(0, 0, SIZE, SIZE);
+            //Отображение текущего кадра текущего монстра
+            drawingSurface.drawImage(image,
+                monster.sourceX, monster.sourceY, SIZE, SIZE,
+                0, 0, SIZE, SIZE);
+        }
+        //Отображение игровой информации
+        output.innerHTML = "Монстров погибло: " + monstersHit +
+            " Время: " + gameTimer.time;
+    }
+</script>

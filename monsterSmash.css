@@ -1,0 +1,21 @@
+#stage
+{
+position: relative;
+width: 552px;
+height: 414px;
+}
+canvas
+{
+display: block;
+position: absolute;
+width: 128px;
+height: 128px;
+box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+border-radius: 10px;
+cursor: pointer;
+}
+
+p
+{
+  font-family: sans-serif;
+}
