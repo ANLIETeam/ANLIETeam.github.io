@@ -1,21 +1,97 @@
-#stage
-{
-position: relative;
-width: 552px;
-height: 414px;
-}
-canvas
-{
-display: block;
-position: absolute;
-width: 128px;
-height: 128px;
-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
-border-radius: 10px;
-cursor: pointer;
+#stage {
+  position: relative;
+  width: 552px;
+  height: 414px;
 }
 
-p
-{
+canvas {
+  display: block;
+  position: absolute;
+  width: 128px;
+  height: 128px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+body {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(102, 148, 246);
   font-family: sans-serif;
+  animation: sky 15s infinite linear;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+@keyframes sky {
+  0% {
+    background: darkslateblue;
+    }
+  50% {
+    background: skyblue;
+    }
+  85% {
+   background: darkslateblue;
+   }
+  100% {
+    background: darkslateblue;
+    }
+}
+
+@keyframes contrast {
+  0% {
+    color: skyblue;
+    }
+  50% {
+    color: darkslateblue;
+    }
+  85% {
+   color: skyblue;
+   }
+  100% {
+    color: skyblue;
+    }
+}
+
+h1 {
+  font-family: Coiny;
+  font-size: 40px;
+  animation: contrast 15s infinite linear;
+  margin-bottom: 0;
+}
+
+.label {
+  font-family: Coiny;
+  margin: 10px;
+  width: 200px;
+  text-align: center;
+  background-color: white;
+  border-radius: 5px;
+}
+
+#panel {
+  margin-left: -10px;
+  margin-top: 0;
+  display: flex;
+  flex-direction: row;
+}
+
+#button-play {
+  margin-left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+}
+
+#credits {
+  width: auto;
+  background-color: rgba(255, 255, 255, 0);
+  margin-left: 0px;
+  animation: contrast 15s infinite linear;
 }
