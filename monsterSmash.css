@@ -96,6 +96,10 @@ h1 {
   animation: contrast 15s infinite linear;
 }
 
+#credits p {
+  margin: 0;
+}
+
 #output {
   height: 52px;
 }
