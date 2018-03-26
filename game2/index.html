@@ -161,13 +161,13 @@
           }
           //Запрет выделения холста
           event.preventDefault();
-        });
+        }, false);
 
-        canvas.addEventListener("touchend", function(event){
+        window.addEventListener("touchend", function(event){
           cat.vx = 0;
           cat.vy = 0;
           event.preventDefault();
-        });
+        }, false);
 
         moveLeftButton.addEventListener("touchstart", function(event){
           moveLeft = true;
