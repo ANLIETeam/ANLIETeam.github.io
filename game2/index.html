@@ -135,35 +135,7 @@
         canvas.addEventListener("touchstart", function(event){
           moveLeftButton.style.visibility = 'visible';
           moveRightButton.style.visibility = 'visible';
-          var touchX = event.pageX - canvas.offsetLeft;
-          var touchY = event.pageY - canvas.offsetTop;
-          //Определение четырех границ спрайта
-          var left = cat.x;
-          var right = cat.x + cat.width;
-          var top = cat.y;
-          var bottom = cat.y + cat.height;
-          //Изменение vx и vy на основе точки касания относительно спрайта
-          if(touchX < left)
-          {
-            moveLeft = true;
-          }
-          if(touchX > right)
-          {
-            moveRight = true;
-          }
-          if(touchY < top)
-          {
-            moveLeft = true;
-          }
-          if(touchY > bottom)
-          {
-            moveRight = true;
-          }
-        }, false);
-
-        window.addEventListener("touchend", function(event){
-          moveLeft = false;
-          moveRight = false;
+          event.preventDefault();
         }, false);
 
         moveLeftButton.addEventListener("touchstart", function(event){
@@ -174,7 +146,6 @@
           moveLeft = false;
           event.preventDefault();
         });
-
         moveRightButton.addEventListener("touchstart", function(event){
           moveRight = true;
           event.preventDefault();
