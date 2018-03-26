@@ -5,6 +5,9 @@
 .button{
   width: 48%;
   height: 35px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  visibility: hidden;
 }
 
 #ui {

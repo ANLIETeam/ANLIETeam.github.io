@@ -130,11 +130,25 @@
 
 
         var moveLeftButton = document.querySelector("#move-left");
+        var moveRightButton = document.querySelector("#move-right");
+
+        canvas.addEventListener("touchstart", function(event){
+          moveLeftButton.style.visibility = 'visible';
+          moveRightButton.style.visibility = 'visible';
+        });
+
         moveLeftButton.addEventListener("touchstart", function(event){
           moveLeft = true;
         });
         moveLeftButton.addEventListener("touchend", function(event){
           moveLeft = false;
+        });
+
+        moveRightButton.addEventListener("touchstart", function(event){
+          moveRight = true;
+        });
+        moveRightButton.addEventListener("touchend", function(event){
+          moveRight = false;
         });
 
 
