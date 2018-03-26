@@ -159,14 +159,11 @@
           {
             moveRight = true;
           }
-          //Запрет выделения холста
-          event.preventDefault();
         }, false);
 
         window.addEventListener("touchend", function(event){
           moveLeft = false;
-            moveRight = false;
-          event.preventDefault();
+          moveRight = false;
         }, false);
 
         moveLeftButton.addEventListener("touchstart", function(event){
