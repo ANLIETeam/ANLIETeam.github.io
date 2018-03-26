@@ -129,7 +129,7 @@
         }, false);
 
         canvas.addEventListener ("touchstart", touchstartHandler, false);
-        window.addEventListener ("touchhend", touchhendHandler, false);
+        window.addEventListener ("touchhend", touchendHandler, false);
 
         function touchstartHandler(event) {
           //Вычисление X и Y позиций точки, где было касание
@@ -141,14 +141,22 @@
           var top = cat.y;
           var bottom = cat.y + cat.height;
           //Изменение vx и vy на основе точки касания относительно спрайта
-          if(touchX < left) cat.vx -= 5;
-          if(touchX > right) cat.vx += 5;
-          if(touchY < top) cat.vy -= 5;
-          if(touchY > bottom) cat.vy += 5;
+          if(touchX < left) {
+            cat.vx -= 5;
+          }
+          if(touchX > right) {
+            cat.vx += 5;
+          }
+          if(touchY < top) {
+            cat.vy -= 5;
+          }
+          if(touchY > bottom) {
+            cat.vy += 5;
+          }
           event.preventDefault();
         }
 
-        function touchhendHandler(event){
+        function touchendHandler(event){
           cat.vx = 0;
           cat.vy = 0;
           event.preventDefault();
