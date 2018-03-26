@@ -127,10 +127,9 @@
                     break;
             }
         }, false);
-        canvas.addEventListener ("touchstart", touchstartHandler, false);
+        window.addEventListener ("touchstart", touchstartHandler, false);
         window.addEventListener ("touchhend", touchhendHandler, false);
-        function touchstartHandler(event)
-        {
+        function touchstartHandler(event) {
           //Вычисление X и Y позиций точки, где было касание
           var touchX = event.pageX - canvas.offsetLeft;
           var touchY = event.pageY - canvas.offsetTop;
@@ -144,6 +143,12 @@
           if(touchX > right) cat.vx += 5;
           if(touchY < top) cat.vy -= 5;
           if(touchY > bottom) cat.vy += 5;
+          event.preventDefault();
+        }
+
+        function touchendHandler(event){
+          cat.vx = 0;
+          cat.vy = 0;
           event.preventDefault();
         }
 
