@@ -135,20 +135,56 @@
         canvas.addEventListener("touchstart", function(event){
           moveLeftButton.style.visibility = 'visible';
           moveRightButton.style.visibility = 'visible';
+          var touchX = event.pageX - canvas.offsetLeft;
+          var touchY = event.pageY - canvas.offsetTop;
+          //Определение четырех границ спрайта
+          var left = cat.x;
+          var right = cat.x + cat.width;
+          var top = cat.y;
+          var bottom = cat.y + cat.height;
+          //Изменение vx и vy на основе точки касания относительно спрайта
+          if(touchX < left)
+          {
+            cat.vx -= 5;
+          }
+          if(touchX > right)
+          {
+            cat.vx += 5;
+          }
+          if(touchY < top)
+          {
+            cat.vy -= 5;
+          }
+          if(touchY > bottom)
+          {
+            cat.vy += 5;
+          }
+          //Запрет выделения холста
+          event.preventDefault();
+        });
+
+        canvas.addEventListener("touchend", function(event){
+          cat.vx = 0;
+          cat.vy = 0;
+          event.preventDefault();
         });
 
         moveLeftButton.addEventListener("touchstart", function(event){
           moveLeft = true;
+          event.preventDefault();
         });
         moveLeftButton.addEventListener("touchend", function(event){
           moveLeft = false;
+          event.preventDefault();
         });
 
         moveRightButton.addEventListener("touchstart", function(event){
           moveRight = true;
+          event.preventDefault();
         });
         moveRightButton.addEventListener("touchend", function(event){
           moveRight = false;
+          event.preventDefault();
         });
 
 
