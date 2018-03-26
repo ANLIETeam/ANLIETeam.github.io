@@ -127,7 +127,8 @@
                     break;
             }
         }, false);
-
+        canvas.addEventListener ("touchstart", touchstartHandler, false);
+        window.addEventListener ("touchhend", touchhendHandler, false);
         function touchstartHandler(event)
         {
           //Вычисление X и Y позиций точки, где было касание
