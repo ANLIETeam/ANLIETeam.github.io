@@ -128,39 +128,15 @@
             }
         }, false);
 
-        canvas.addEventListener ("touchstart", touchstartHandler, false);
-        window.addEventListener ("touchhend", touchendHandler, false);
 
-        function touchstartHandler(event) {
-          //Вычисление X и Y позиций точки, где было касание
-          var touchX = event.pageX - canvas.offsetLeft;
-          var touchY = event.pageY - canvas.offsetTop;
-          //Определение четырех границ спрайта
-          var left = cat.x;
-          var right = cat.x + cat.width;
-          var top = cat.y;
-          var bottom = cat.y + cat.height;
-          //Изменение vx и vy на основе точки касания относительно спрайта
-          if(touchX < left) {
-            cat.vx -= 5;
-          }
-          if(touchX > right) {
-            cat.vx += 5;
-          }
-          if(touchY < top) {
-            cat.vy -= 5;
-          }
-          if(touchY > bottom) {
-            cat.vy += 5;
-          }
-          event.preventDefault();
-        }
+        var moveLeftButton = document.querySelector("#move-left");
+        moveLeftButton.addEventListener("touchstart", function(event){
+          moveLeft = true;
+        });
+        moveLeftButton.addEventListener("touchend", function(event){
+          moveLeft = false;
+        });
 
-        function touchendHandler(event){
-          cat.vx = 0;
-          cat.vy = 0;
-          event.preventDefault();
-        }
 
         function loadHandler() {
             update();
