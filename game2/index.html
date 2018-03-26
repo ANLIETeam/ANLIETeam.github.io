@@ -145,27 +145,27 @@
           //Изменение vx и vy на основе точки касания относительно спрайта
           if(touchX < left)
           {
-            cat.vx -= 5;
+            moveLeft = true;
           }
           if(touchX > right)
           {
-            cat.vx += 5;
+            moveRight = true;
           }
           if(touchY < top)
           {
-            cat.vy -= 5;
+            moveLeft = true;
           }
           if(touchY > bottom)
           {
-            cat.vy += 5;
+            moveRight = true;
           }
           //Запрет выделения холста
           event.preventDefault();
         }, false);
 
         window.addEventListener("touchend", function(event){
-          cat.vx = 0;
-          cat.vy = 0;
+          moveLeft = false;
+            moveRight = false;
           event.preventDefault();
         }, false);
 
