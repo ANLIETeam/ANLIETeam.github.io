@@ -1,8 +1,10 @@
 <!doctype html>
 <head>
   <meta charset="utf-8">
-  <title>Parallax effect</title>
+  <title>Parallax Effect</title>
   <link rel="stylesheet" href="styles.css" type="text/css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Coiny" rel="stylesheet">
 <head>
   <body>
     <div id="ui">
@@ -71,7 +73,6 @@
         var camera = {
             x: 0,
             y: 0,
-
             width: canvas.width,
             height: canvas.height,
             vx: 0,
@@ -92,7 +93,7 @@
         //Создание спрайта кошки и центрирование его
         var cat = Object.create(spriteObject);
         cat.x = (gameWorld.x + gameWorld.width / 2) - cat.width / 2;
-        cat.y = 174;
+        cat.y = 90;
         sprites.push(cat);
         //Загрузка набора фреймов
         var image = new Image();
@@ -126,6 +127,24 @@
                     break;
             }
         }, false);
+
+        function touchstartHandler(event)
+        {
+          //Вычисление X и Y позиций точки, где было касание
+          var touchX = event.pageX - canvas.offsetLeft;
+          var touchY = event.pageY - canvas.offsetTop;
+          //Определение четырех границ спрайта
+          var left = cat.x;
+          var right = cat.x + cat.width;
+          var top = cat.y;
+          var bottom = cat.y + cat.height;
+          //Изменение vx и vy на основе точки касания относительно спрайта
+          if(touchX < left) cat.vx -= 5;
+          if(touchX > right) cat.vx += 5;
+          if(touchY < top) cat.vy -= 5;
+          if(touchY > bottom) cat.vy += 5;
+          event.preventDefault();
+        }
 
         function loadHandler() {
             update();

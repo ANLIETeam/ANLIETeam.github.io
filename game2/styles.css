@@ -84,10 +84,19 @@ h1 {
 }
 
 #credits {
-  width: auto;
-  background-color: rgba(255, 255, 255, 0);
-  margin-left: 0px;
-  animation: contrast 15s infinite linear;
+    width: auto;
+    background-color: rgba(255, 255, 255, 0);
+    margin-left: 0px;
+    animation: contrast 15s infinite linear;
+}
+
+.label {
+    font-family: Coiny;
+    margin: 10px;
+    width: 200px;
+    text-align: center;
+    background-color: white;
+    border-radius: 5px;
 }
 
 #credits p {
