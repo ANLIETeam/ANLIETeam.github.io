@@ -1,0 +1,106 @@
+#stage {
+  position: relative;
+}
+
+.button{
+  width: 48%
+}
+
+#ui {
+  width: 565px;
+}
+
+canvas {
+  background-color: #00008B;
+  display: block;
+  position: absolute;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  background-color: rgb(102, 148, 246);
+  font-family: sans-serif;
+  animation: sky 15s infinite linear;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+@keyframes sky {
+  0% {
+    background: darkslateblue;
+    }
+  50% {
+    background: skyblue;
+    }
+  85% {
+   background: darkslateblue;
+   }
+  100% {
+    background: darkslateblue;
+    }
+}
+
+@keyframes contrast {
+  0% {
+    color: skyblue;
+    }
+  50% {
+    color: darkslateblue;
+    }
+  85% {
+   color: skyblue;
+   }
+  100% {
+    color: skyblue;
+    }
+}
+
+h1 {
+  text-align: center;
+  font-family: Coiny;
+  font-size: 40px;
+  animation: contrast 15s infinite linear;
+  margin-bottom: 0;
+}
+
+.label {
+  font-family: Coiny;
+  /* width: 200px; */
+  text-align: center;
+  background-color: white;
+  border-radius: 5px;
+}
+
+#panel {
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#credits {
+  width: auto;
+  background-color: rgba(255, 255, 255, 0);
+  margin-left: 0px;
+  animation: contrast 15s infinite linear;
+}
+
+#credits p {
+  margin: 0;
+}
+
+@media screen and (max-width: 565px) {
+  #ui{
+    width: 96%
+  }
+  canvas{
+    width: 100%
+  }
+  #credits{
+    font-size: 12px;
+  }
