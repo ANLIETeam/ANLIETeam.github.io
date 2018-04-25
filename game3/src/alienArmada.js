@@ -96,6 +96,7 @@
     var sprites = [];
     var missiles = [];
     var aliens = [];
+    var alienSpeed = 1.5;
     //Создание спрайта орудия внизу по центру холста
     var cannon = Object.create(spacecraft);
     cannon.sourceWidth = 110;
@@ -219,7 +220,8 @@
             //Уменьшение alienFrequency на 1 для постепенного
             //увеличения частоты появления инопланетян
             if (alienFrequency > 2) {
-                alienFrequency--;
+              alienSpeed += 0.1
+                alienFrequency --;
             }
         }
         //Цикл по пришельцам
@@ -298,7 +300,7 @@
         var randomPosition = Math.floor(Math.random() * 15);
         alien.x = randomPosition * alien.width;
         //Установка скорости перемещения пришельца
-        alien.vy = 1;
+        alien.vy = alienSpeed;
         //Добавление спрайта в массивы sprites и aliens
         sprites.push(alien);
         aliens.push(alien);
