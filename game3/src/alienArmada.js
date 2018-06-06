@@ -140,7 +140,6 @@
         //Выбор дальнейших действий в зависимости от состояния игры
         switch (gameState) {
             case LOADING:
-                console.log("Загрузка...");
                 break;
             case PLAYING:
                 playGame();
