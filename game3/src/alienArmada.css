@@ -1,3 +1,7 @@
+@font-face {
+  font-family: 'Emulogic';
+  src: url(../fonts/emulogic.ttf);
+}
 
 #title {
   position: absolute;
@@ -27,11 +31,6 @@
   to {
     transform: translateY(0);
   }
-}
-
-@font-face {
-  font-family: 'Emulogic';
-  src: url(../fonts/emulogic.ttf);
 }
 
 html {
