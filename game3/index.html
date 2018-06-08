@@ -6,10 +6,7 @@
     <!--Таблица стилей -->
     <link rel="stylesheet" href="src/alienArmada.css">
     <!-- Звуки -->
-    <audio id="mainMenuMusic" autoplay>
-      <source src="sounds/main_menu.mp3" type="audio/mpeg" loop>
-    </audio>
-    <audio id="gameMusic">
+    <audio id="music" autoplay>
       <source src="sounds/game.mp3" type="audio/mpeg" loop>
     </audio>
     <audio id="shootSound">
@@ -20,32 +17,8 @@
     </audio>
   </head>
   <body>
-    <!-- Star background -->
-    <div id='stars'></div>
-    <div id='stars2'></div>
-    <div id='stars3'></div>
     <!-- Canvas -->
-    <canvas></canvas>
-    <!-- App -->
-    <div id='app'>
-      <!-- UI -->
-      <div id="ui">
-        <div id="message-score" class="message">
-          <h2 class="underlined">BEST</h2>
-          <h3>0</h3>
-        </div>
-
-        <div id="message-game-state" class="message">
-          <h2 class="underlined">GAME OVER!</h2>
-          <div>
-            <h3>SCORE: </h3>
-            <h3>NEW BEST!</h3>
-          </div>
-        </div>
-
-        <button>PLAY!</button>
-      </div>
-    </div>
+    <canvas width="400" height="700"></canvas>
     <!-- Код игры -->
     <script src="src/objects.js"></script>
     <script src="src/collision.js"></script>
