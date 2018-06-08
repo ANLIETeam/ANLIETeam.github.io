@@ -18,15 +18,10 @@
     assetsToLoad.push(image);
 
     //Загрузка звуков
-    var mainMenuMusic = document.querySelector("#mainMenuMusic");
-    mainMenuMusic.addEventListener("canplaythrough", loadHandler, false);
-    mainMenuMusic.load();
-    assetsToLoad.push(mainMenuMusic);
-
-    var gameMusic = document.querySelector("#gameMusic");
-    gameMusic.addEventListener("canplaythrough", loadHandler, false);
-    gameMusic.load();
-    assetsToLoad.push(gameMusic);
+    var music = document.querySelector("#music");
+    music.addEventListener("canplaythrough", loadHandler, false);
+    music.load();
+    assetsToLoad.push(music);
 
     var shootSound = document.querySelector("#shootSound");
     shootSound.addEventListener("canplaythrough", loadHandler, false);
@@ -219,17 +214,15 @@
         if (assetsLoaded === assetsToLoad.length) {
             //Отключение отслеживания событий загрузки ресурсов
             image.removeEventListener("load", loadHandler, false);
-            gameMusic.removeEventListener("canplaythrough",
-                loadHandler, false);
-            mainMenuMusic.removeEventListener("canplaythrough",
+            music.removeEventListener("canplaythrough",
                 loadHandler, false);
             shootSound.removeEventListener("canplaythrough",
                 loadHandler, false);
             explosionSound.removeEventListener("canplaythrough",
                 loadHandler, false);
             //Воспроизведение музыкального файла music
-            mainMenuMusic.play();
-            mainMenuMusic.volume = 0.8;
+            music.play();
+            music.volume = 0.5;
             //Start game
             gameState = PLAYING;
         }
