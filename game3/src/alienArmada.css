@@ -1,92 +1,17 @@
 @font-face {
-  font-family: 'Emulogic';
-  src: url(../fonts/emulogic.ttf);
-}
-
-#title {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  color: #FFF;
-  text-align: center;
-  font-family: "lato", sans-serif;
-  font-weight: 300;
-  font-size: 50px;
-  letter-spacing: 10px;
-  margin-top: -60px;
-  padding-left: 10px;
-}
-
-#title span {
-  background: -webkit-linear-gradient(white, #38495a);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-@keyframes animStar {
-  from {
-    transform: translateY(-2000px);
-  }
-  to {
-    transform: translateY(0);
-  }
+  font-family: emulogic;
+  src: url('../fonts/emulogic.ttf')
 }
 
 html {
   height: 100%;
-  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-  overflow: hidden;
-}
-
-#app {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 512px;
-  height: 100vh;
-  width: auto;
-}
-
-#message-game-state {
-  display: none;
+  background-color: black;
 }
 
 canvas {
-  z-index: 1;
+  border: 1px solid grey;
   position: absolute;
-  top: 0;
-  left: 0;
-}
-
-button {
-  cursor: pointer;
-  font-family: 'Emulogic';
-  font-size: 30px;
-  width: 512px;
-  height: 128px;
-  outline: none;
-  border-radius: 5px;
-}
-
-button:active {
-  transition: all .1s;
-  transform: translate(0px, 5px);
-}
-
-.message {
-  user-select: none;
-  font-family: 'Emulogic';
-  color: white;
-  text-align: center;
-}
-
-h2, h3 {
-  font-size: 40px;
-}
-
-.underlined {
-  text-decoration: underline;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

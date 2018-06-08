@@ -39,6 +39,17 @@ var spriteObject = {
     }
 };
 
+var messageObject =
+{
+  x: 0,
+  y: 0,
+  visible: true,
+  text: "Message",
+  font: "normal bold 40px Helvetica",
+  fillStyle: "red",
+  textBaseline: "top"
+};
+
 var spacecraft = Object.create(spriteObject);
 spacecraft.NORMAL = 1;
 spacecraft.EXPLODED = 2;

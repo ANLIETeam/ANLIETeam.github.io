@@ -1,38 +1,16 @@
 (function() {
-    var maxScore = 0
-    // Some stars
-    var starCollections = ['', 2, 3].map(function (i) {
-      return document.getElementById('stars' + i)
-    })
-
-    function setStarCollectionSpeed(i, speed) {
-      starCollections[i].style.animation = 'animStar ' + speed + 's linear infinite'
-    }
-    // HTML elements
-    var body = document.querySelector('body')
-
-    var button = document.getElementsByTagName('button')[0]
-    var ui = document.getElementById('ui')
-
-    var scoreInfo = document.getElementById('message-score')
-    var scoreHeader = document.querySelector('#message-score h2')
-    var mainScore = document.querySelector('#message-score h3')
-
-    var gameStateInfo = document.getElementById('message-game-state')
-    var resultScore = document.querySelector('#message-game-state h3:first-child')
-    var newBestMessage = document.querySelector('#message-game-state h3:last-child')
-    // HTML event listeners
-    button.addEventListener('click', function () {
-      gameState = PLAYING
-      button.style.display = 'none'
-    })
-    newBestMessage.style.display = 'none'
     //Холст и поверхность рисования
     var canvas = document.querySelector("canvas");
     var drawingSurface = canvas.getContext("2d");
 
-    //Массивы загружаемых ресурсов
+    //Массивы игровых объектов и загружаемых ресурсов
+    var sprites = [];
     var assetsToLoad = [];
+    var missiles = [];
+    var aliens = [];
+    var messages = [];
+    var starBackgrounds = [];
+
     //Загрузка таблицы фреймов
     var image = new Image();
     image.addEventListener("load", loadHandler, false);
@@ -59,6 +37,7 @@
     explosionSound.addEventListener("canplaythrough", loadHandler, false);
     explosionSound.load();
     assetsToLoad.push(explosionSound);
+
     //Счетчик числа загруженных ресурсов
     var assetsLoaded = 0;
 
@@ -70,17 +49,7 @@
     var RIGHT = 39;
     var LEFT = 37;
     var SPACE = 32;
-    // Button
-    button.addEventListener('click', function () {
-      // Transit to play state
-      gameState = PLAYING
-      setStarCollectionSpeed(0, 15)
-      setStarCollectionSpeed(1, 5)
-      setStarCollectionSpeed(2, 2)
-      mainMenuMusic.pause()
-      gameMusic.volume = 0.3
-      gameMusic.play()
-    })
+
     //Направления движения орудия
     var moveRight = false;
     var moveLeft = false;
@@ -90,18 +59,65 @@
     //Переменные игры
     var gameState = LOADING;
     var score = 0;
-    var scoreNeededToWin = 60;
+    var scoreNeededToWin = 30;
     var alienFrequency = 100;
     var alienTimer = 0;
-    var sprites = [];
-    var missiles = [];
-    var aliens = [];
     var alienSpeed = 1.5;
+    var cannonSpeed = 10;
+
+    //Создание спрайтов звезд
+    var sourceY = 253;
+    var factor = 4;
+    for (i = 0; i < 3; i++){
+      var starBackground = Object.create(spriteObject);
+      starBackground.sourceWidth = canvas.width * (1 + 1 / factor);
+      starBackground.sourceHeight = 700;
+      starBackground.width = starBackground.sourceWidth;
+      starBackground.height = canvas.height;
+      starBackground.sourceY = sourceY;
+      starBackground.x = (canvas.width - starBackground.width) / 2;
+      starBackground.y = 0;
+      starBackground.maxVX = cannonSpeed / factor;
+      sprites.push(starBackground);
+      starBackgrounds.push(starBackground);
+
+      // Increment
+      sourceY += 700;
+      factor *= 2;
+    }
+    //Создание спрайта Земли
+    var planet = Object.create(spriteObject);
+    planet.sourceWidth = planet.width = 466;
+    planet.sourceHeight = planet.height = 100;
+    planet.sourceX = 0;
+    planet.sourceY = 2352;
+    planet.x = (canvas.width - planet.width) / 2;
+    planet.y = 600;
+    planet.maxVX = cannonSpeed / 6;
+    sprites.push(planet)
     //Создание спрайта орудия внизу по центру холста
     var cannon = Object.create(spacecraft);
     cannon.sourceWidth = 110;
     cannon.sourceHeight = 174;
+    cannon.x = (canvas.width - cannon.width) / 2;
+    cannon.y = canvas.height - cannon.height - 5;
     sprites.push(cannon);
+    //Создание объекта для отображения счета игры
+    var scoreDisplay = Object.create(messageObject);
+    scoreDisplay.font = "normal bold 30px emulogic";
+    scoreDisplay.fillStyle = "#00FF00";
+    scoreDisplay.x = 330;
+    scoreDisplay.y = 10;
+    messages.push(scoreDisplay);
+    //Создание объекта для отображения сообщения о конце игры
+    var gameOverMessage = Object.create(messageObject);
+    gameOverMessage.font = "normal bold 20px emulogic";
+    gameOverMessage.fillStyle = "#00FF00";
+    gameOverMessage.x = 55;
+    gameOverMessage.y = 120;
+    gameOverMessage.visible = false;
+    messages.push(gameOverMessage);
+
     //Подключение обработчиков событий нажатия/отпускания клавиш
     window.addEventListener("keydown", function(event) {
         switch (event.keyCode) {
@@ -130,13 +146,59 @@
                 spaceKeyIsDown = false;
         }
     }, false);
-    //Запуск цикла анимации игры
 
+    //Подключение обработчиков событий касания
+    var touch = null
+    canvas.addEventListener("touchstart", function(event){
+      //Update ongoing touches
+      touch = event.touches[0]
+
+      var touchX = touch.pageX - canvas.offsetLeft + canvas.width / 2
+      var touchY = touch.pageY - canvas.offsetTop + canvas.height / 2
+      if (touchX > cannon.x + cannon.width / 2){
+        moveRight = true;
+      } else {
+        moveRight = false
+        if (touchX < cannon.x){
+          moveLeft = true;
+        } else {
+          moveLeft = false
+          if (touchY >= cannon.y){
+            if (!spaceKeyIsDown) {
+                shoot = true;
+                spaceKeyIsDown = true;
+            }
+          }
+        }
+      }
+    }, false);
+    canvas.addEventListener("touchend", function(event){
+      touch = null
+
+      if (moveRight){
+        moveRight = false
+      } else if (moveLeft) {
+        moveLeft = false
+      } else if (spaceKeyIsDown){
+        spaceKeyIsDown = false
+      }
+    }, false);
+
+    //Запуск цикла анимации игры
     update();
 
     function update() {
         //Цикл анимации
         requestAnimationFrame(update, canvas);
+        //Прекратить движение
+        if (touch){
+          var touchX = touch.pageX - canvas.offsetLeft + canvas.width / 2
+          if (moveRight && touchX <= cannon.x + cannon.width / 2) {
+            moveRight = false
+          } else if (moveLeft && touchX >= cannon.x) {
+            moveLeft = false
+          }
+        }
         //Выбор дальнейших действий в зависимости от состояния игры
         switch (gameState) {
             case LOADING:
@@ -168,23 +230,36 @@
             //Воспроизведение музыкального файла music
             mainMenuMusic.play();
             mainMenuMusic.volume = 0.8;
+            //Start game
+            gameState = PLAYING;
         }
-        window.onresize = resizeCanvasAndPlaceCannon
-        resizeCanvasAndPlaceCannon()
     }
 
     function playGame() {
+        var dbg = false;
         //Налево
         if (moveLeft && !moveRight) {
-            cannon.vx = -10;
+            cannon.vx = -cannonSpeed;
+            for (i = 0; i < starBackgrounds.length; i++){
+              starBackgrounds[i].vx = -starBackgrounds[i].maxVX
+            }
+            planet.vx = -planet.maxVX
         }
         //Направо
         if (moveRight && !moveLeft) {
-            cannon.vx = 10;
+            cannon.vx = cannonSpeed;
+            for (i = 0; i < starBackgrounds.length; i++){
+              starBackgrounds[i].vx = starBackgrounds[i].maxVX
+            }
+            planet.vx = planet.maxVX
         }
         //Если ни одна из клавиш не нажата, скорость перемещения 0
         if (!moveLeft && !moveRight){
             cannon.vx = 0;
+            for (i = 0; i < starBackgrounds.length; i++){
+              starBackgrounds[i].vx = 0
+            }
+            planet.vx = 0
         }
         //Запуск ракеты, если shoot имеет значение true
         if (shoot) {
@@ -194,6 +269,14 @@
         //Перемещение орудия в пределах границ холста
         cannon.x = Math.max(0, Math.min(cannon.x +
             cannon.vx, canvas.width - cannon.width));
+        //Перемещение звезд
+        for (i = 0; i < starBackgrounds.length; i++){
+          starBackgrounds[i].x = Math.max(canvas.width - starBackgrounds[i].width,
+            Math.min(starBackgrounds[i].x + starBackgrounds[i].vx, 0));
+        }
+        //Перемещение планеты
+        planet.x = Math.max(canvas.width - planet.width,
+          Math.min(planet.x + planet.vx, 0))
         //Перемещение ракеты
         for (var i = 0; i < missiles.length; i++) {
             var missile = missiles[i];
@@ -219,8 +302,7 @@
             //Уменьшение alienFrequency на 1 для постепенного
             //увеличения частоты появления инопланетян
             if (alienFrequency > 2) {
-              alienSpeed += 0.1
-                alienFrequency --;
+              alienFrequency--;
             }
         }
         //Цикл по пришельцам
@@ -230,11 +312,12 @@
                 //Перемещение пришельца, если его состояние NORMAL
                 alien.y += alien.vy;
             }
-            //Проверка столкнулись ли корабли
-            var crashed = hitTestRectangle(alien, cannon)
-            if (crashed) {
-                //Завершение игры, если корабли столкнулись
-                gameState = OVER;
+            //Проверка, пересек ли пришелец нижний край холста
+            if(alien.y > canvas.height)
+            // if(true)
+            {
+              //Завершение игры, если пришелец достиг Земли
+              gameState = OVER;
             }
         }
         //--- Столкновение объектов
@@ -258,24 +341,22 @@
             }
         }
         //Отображение счета
-        mainScore.innerHTML = score;
-        scoreHeader.innerHTML = "SCORE"
+        scoreDisplay.text = score;
         //Проверка завершения игры победой игрока
-        if (score === scoreNeededToWin) {
-            gameState = OVER;
+        if(score === scoreNeededToWin)
+        {
+          gameState = OVER;
         }
     }
 
-    function destroySpacecraft(alien, callback) {
-        console.log(alien);
+    function destroySpacecraft(alien) {
         //Смена состояния пришельца
         alien.state = alien.EXPLODED;
         alien.explode();
         //Удаление спрайта пришельца через 1,1 секунду
         setTimeout(function () {
           removeAlien(alien)
-          callback()
-        }, 1200);
+        }, 1100);
         //Воспроизведение звука взрыва
         explosionSound.currentTime = 0;
         explosionSound.volume = 0.2
@@ -296,8 +377,8 @@
         //Установка Y-поциции пришельца за верхней границей холста
         alien.y = 0 - alien.height;
         //Установка случайной X-поциции пришельца
-        var randomPosition = Math.floor(Math.random() * 15);
-        alien.x = randomPosition * alien.width;
+        var randomPosition = Math.floor(Math.random() * (canvas.width - alien.width));
+        alien.x = randomPosition
         //Установка скорости перемещения пришельца
         alien.vy = alienSpeed;
         //Добавление спрайта в массивы sprites и aliens
@@ -333,50 +414,16 @@
             array.splice(i, 1);
         }
     }
-
-    function endGame() {
-        destroySpacecraft(cannon, function () {
-          //Направления движения орудия
-          moveRight = false;
-          moveLeft = false;
-          //Переменные для стрельбы ракетами
-          shoot = false;
-          spaceKeyIsDown = false;
-          //Переменные игры
-          gameState = LOADING;
-          score = 0;
-          scoreNeededToWin = 60;
-          alienFrequency = 100;
-          alienTimer = 0;
-          sprites = [];
-          missiles = [];
-          aliens = [];
-          cannon = Object.create(spacecraft);
-          cannon.sourceWidth = 110;
-          cannon.sourceHeight = 174;
-          sprites.push(cannon);
-          resizeCanvasAndPlaceCannon()
-          console.log(cannon);
-        })
-
-        gameMusic.pause()
-        mainMenuMusic.play()
-
-        setStarCollectionSpeed(0, 50)
-        setStarCollectionSpeed(1, 25)
-        setStarCollectionSpeed(2, 10)
-
-        gameState = LOADING
-        scoreInfo.style.display = 'none'
-        gameStateInfo.style.display = 'block'
-        resultScore.innerHTML = "SCORE: " + score
-
-        if (score > maxScore){
-          newBestMessage.style.display = 'block'
-          maxScore = score
+    function endGame()
+      {
+        gameOverMessage.visible = true;
+        if(score < scoreNeededToWin){
+          gameOverMessage.text = "Earth captured!";
         }
-
-        body.addEventListener('click', showMainMenu)
+        else {
+          gameOverMessage.x = 80;
+          gameOverMessage.text = "Earth saved!";
+        }
     }
 
     function render() {
@@ -392,23 +439,18 @@
                     sprite.width, sprite.height);
             }
         }
-    }
-
-    function resizeCanvasAndPlaceCannon() {
-      console.log('Resize');
-      mainScore.innerHTML = maxScore
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      cannon.y = window.innerHeight - 100;
-      cannon.x = canvas.width / 2 - cannon.width / 2;
-    }
-
-    function showMainMenu() {
-      body.removeEventListener('click', showMainMenu)
-      gameStateInfo.style.display = 'none'
-      newBestMessage.style.display = 'none'
-      scoreInfo.style.display = 'block'
-      scoreHeader.innerHTML = 'BEST'
-      button.style.display = 'block'
+        //Отображение игровых сообщений
+      if(messages.length !== 0){
+        for(var i = 0; i < messages.length; i++){
+          var message = messages[i];
+          if(message.visible){
+            drawingSurface.font = message.font;
+            drawingSurface.fillStyle = message.fillStyle;
+            drawingSurface.textBaseline = message.textBaseline;
+            drawingSurface.fillText(message.text, message.x,
+              message.y);
+          }
+        }
+      }
     }
 }());
